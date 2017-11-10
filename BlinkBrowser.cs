@@ -30,10 +30,15 @@ namespace MiniBlinkPinvoke
 
 
         public event TitleChangedCallback OnTitleChangeCall;
-        // 
+
         public delegate void URLChange(string url);
         public event URLChange OnUrlChangeCall;
-        //public event wkeDocumentReadyCallback DocumentReadyCallback;
+
+
+        public delegate void DocumentReady();
+        public event DocumentReady DocumentReadyCallback;
+
+
 
         List<object> listObj = new List<object>();
 
@@ -118,6 +123,8 @@ namespace MiniBlinkPinvoke
         void OnwkeDocumentReadyCallback(IntPtr webView, IntPtr param)
         {
             Console.WriteLine("call OnwkeDocumentReadyCallback:" + Marshal.PtrToStringUni(param));//.Utf8IntptrToString());
+            DocumentReadyCallback?.Invoke();
+
         }
         void OnwkeConsoleMessageCallback(IntPtr webView, IntPtr param, wkeConsoleLevel level, IntPtr message, IntPtr sourceName, int sourceLine, IntPtr stackTrace)
         {
@@ -356,6 +363,10 @@ namespace MiniBlinkPinvoke
                 BlinkBrowserPInvoke.wkeOnTitleChanged(this.handle, titleChangeCallback, IntPtr.Zero);
                 listObj.Add(titleChangeCallback);
 
+                _wkeDocumentReadyCallback = OnwkeDocumentReadyCallback;
+                BlinkBrowserPInvoke.wkeOnDocumentReady(this.handle, _wkeDocumentReadyCallback, IntPtr.Zero);
+                listObj.Add(_wkeDocumentReadyCallback);
+
                 urlChangedCallback = OnUrlChangedCallback;
                 BlinkBrowserPInvoke.wkeOnURLChanged(this.handle, urlChangedCallback, IntPtr.Zero);
                 listObj.Add(urlChangedCallback);
@@ -442,7 +453,6 @@ namespace MiniBlinkPinvoke
         }
         protected override void OnPaint(PaintEventArgs e)
         {
-
             if (handle != IntPtr.Zero)
             {
 
