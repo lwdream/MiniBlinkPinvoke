@@ -334,6 +334,8 @@ namespace MiniBlinkPinvoke
                 BlinkBrowserPInvoke.wkeSetCookieJarPath(handle, CookiePath);
 
                 BlinkBrowserPInvoke.wkeResize(handle, Width, Height);
+                BlinkBrowserPInvoke.wkeSetUserAgentW(this.handle, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36");
+
                 BindJsFunc();
                 //AlertBoxCallback = new AlertBoxCallback((a, b, c) =>
                 //{
